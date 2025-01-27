@@ -1,0 +1,1 @@
+RUN python -m game_analyser

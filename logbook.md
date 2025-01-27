@@ -9,11 +9,14 @@
     - [ ] Is containerised 
 
 # Solution
+    ## Database
+        - Contains tables to store the CSV files
     ## Backend
         - use FastAPI for API
+        - seed the database on startup with csv files
     ## Frontend
         - use React for basic interface
-    ## Deployment
+    ## Deployment 
         ### Dockerfile
             - Dockerfile for backend
             - Dockerfile for frontend
@@ -26,3 +29,9 @@
 - simulations.csv - Mock simulated runs for the different teams
 - games.csv - matchup information between different local teams
 
+
+Ah so each venue has an associated ID, that needs to be it's own table
+.. how do we know what team_id associates to what team name? ah nvm lol
+
+# IMPORTANT
+We are looking for clean solutions that can be extended in a straightforward way.
