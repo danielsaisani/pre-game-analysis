@@ -1,6 +1,7 @@
 # Breaking things down
 
 # Requirements
+- [ ] database that stores the csv data inside it and re-initialises on every startup
 - [ ] docker compose up should be only command necessary for testing
 - [ ] application should run on port 3000
 - [ ] Allows the user to choose any game and displays relevant information
@@ -22,7 +23,8 @@
             - Dockerfile for frontend
         ### Docker compose file
             - Docker compose file to start both containers on proper ports and expose port 3000 for frontend
-
+        ### Custom CLI tooling
+            - Add command to restart entire cluster of docker containers and start from scratch by deleting previous docker containers
 # Thoughts
 
 - venues.csv - IDs and names of a few local cricket grounds
@@ -32,6 +34,10 @@
 
 Ah so each venue has an associated ID, that needs to be it's own table
 .. how do we know what team_id associates to what team name? ah nvm lol
+
+
+
+
 
 # IMPORTANT
 We are looking for clean solutions that can be extended in a straightforward way.

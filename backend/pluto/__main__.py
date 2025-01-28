@@ -2,45 +2,49 @@ import uvicorn
 from fastapi import FastAPI
 import sqlite3
 import csv
+from pluto.utils.utils import get_data_from_csv, get_table_headers_from_csv
+from pluto.utils.db.manager import DatabaseManager
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = FastAPI()
 
 SEED_FILES = ['venues', 'games', 'simulations']
+DATABASE_NAME=os.getenv('DATABASE_NAME', 'pluto.db')
+SEED_FILE_DIRECTORY = './resources/'
 
-def get_table_headers_from_csv(filename):
-    with open(filename, newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        return reader[0]
-
-def get_data_from_csv(filename): 
-    data=[]
-    with open(filename, newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        # Ignore the header names
-        for row in reader[1:]:
-            data.append(row)
-    return data
-
-
-def initialise():
+def initialise(db):
     """Seed the database and perform any other initialization necessary."""
-    con = sqlite3.connect("pluto.db")
-    cur = con.cursor()
-    
-    first = SEED_FILES[0]
-    
-    first_headers = get_table_headers_from_csv(first)
-
-    first_headers_string = ", ".join([header for header in first_headers])
-    
-    # Initialise table containing the venues and their associated ID's from the CSV
-    cur.execute(f"CREATE TABLE {first}({first_headers_string})")
+        
+    for seed_file in SEED_FILES:
+        # Extract headers and data
+        headers = get_table_headers_from_csv(f"{SEED_FILE_DIRECTORY}{seed_file}")
+        data = get_data_from_csv(f"{SEED_FILE_DIRECTORY}{seed_file}")
+        
+        db.create_new_empty_table_with_headers(table_name=seed_file, headers=headers)
+        db.insert_data_into_database(table_name=seed_file, headers=headers, data=data)
 
 
-@app.get("/gameInformation")
+@app.get("/games")
+async def root():
+    
+    games = db.get_all_games()
+    
+    return {"games": games}
+
+@app.get("/")
 async def root():
     return {"message": "Hello World"}
 
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+
+
 if __name__ == "__main__":
-    initialise()
+    db = DatabaseManager(DATABASE_NAME)
+    initialise(db)
     uvicorn.run('pluto.__main__:app', host="0.0.0.0", port=8000, reload=True)
