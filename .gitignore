@@ -181,6 +181,9 @@ ipython_config.py
 #   https://pdm.fming.dev/#use-with-ide
 .pdm.toml
 
+node_modules
+package-lock.json
+
 *.db
 *.db-journal
 

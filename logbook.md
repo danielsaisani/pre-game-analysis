@@ -1,5 +1,7 @@
 # Breaking things down
 
+# Monolith
+
 # Requirements
 - [ ] database that stores the csv data inside it and re-initialises on every startup
 - [ ] docker compose up should be only command necessary for testing
