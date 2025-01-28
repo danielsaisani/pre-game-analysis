@@ -38,6 +38,7 @@ const useGamesData = () => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchData();
