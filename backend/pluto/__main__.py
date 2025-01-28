@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 import csv
 from pluto.utils.utils import get_data_from_csv, get_table_headers_from_csv
@@ -10,6 +11,14 @@ import os
 load_dotenv()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 SEED_FILES = ['venues', 'games', 'simulations']
 DATABASE_NAME=os.getenv('DATABASE_NAME', 'pluto.db')
