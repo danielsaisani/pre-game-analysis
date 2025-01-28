@@ -24,6 +24,9 @@ SEED_FILES = ['venues', 'games', 'simulations']
 DATABASE_NAME=os.getenv('DATABASE_NAME', 'pluto.db')
 SEED_FILE_DIRECTORY = './resources/'
 
+db = DatabaseManager(DATABASE_NAME)
+
+
 def initialise(db):
     """Seed the database and perform any other initialization necessary."""
         
@@ -51,9 +54,6 @@ async def root():
 async def root():
     return {"message": "Hello World"}
 
-
-
 if __name__ == "__main__":
-    db = DatabaseManager(DATABASE_NAME)
     initialise(db)
     uvicorn.run('pluto.__main__:app', host="0.0.0.0", port=8000, reload=True)
