@@ -1,8 +1,7 @@
-import { Modal } from "./modal";
+import { Modal } from "./ui/modal";
 
 interface ViewGameAnalysisModalProps {
     onClose: (closed: boolean) => void
-    onSubmit: (data: { name: string; email: string; phone: string, phone_extension: string }) => void
 }
 
 export function ViewGameAnalysisModal({ onClose }: ViewGameAnalysisModalProps) {

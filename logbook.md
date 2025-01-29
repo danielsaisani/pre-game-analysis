@@ -38,8 +38,13 @@ Ah so each venue has an associated ID, that needs to be it's own table
 .. how do we know what team_id associates to what team name? ah nvm lol
 
 
+- each game when clicked on -> get the venue name from the venue ID -> get the simulation data necessary -> pass venue id and simulation data into modal
+ah no no
+- each game should pull the simulation data for each team involved
+    - display the simulation data as a histogram
+    - display the percentage of simulated wins of the home team vs the away team
 
-
+- Make sure to include logging
 
 # IMPORTANT
 We are looking for clean solutions that can be extended in a straightforward way.
