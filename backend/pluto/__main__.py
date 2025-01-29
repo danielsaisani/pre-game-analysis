@@ -17,6 +17,10 @@ import logging
 
 load_dotenv()
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+
 app = FastAPI()
 
 app.add_middleware(
@@ -47,7 +51,7 @@ def initialise(db):
 
 @app.get("/games")
 async def games() -> list[Game]:
-    logging.log(msg=f"Retrieving all games.", level=5)
+    logger.info(f"Retrieving all games.")
     games = db.get_all_games()
     if not games:
         raise HTTPException(status_code=500, detail="Failed to retrieve all games, we have our best people on it.") 
@@ -56,7 +60,7 @@ async def games() -> list[Game]:
 
 @app.get("/venueName/{venue_id}")
 async def venue_name(venue_id: str) -> str:
-    logging.log(msg=f"Retrieving venue name for venue_id {venue_id}", level=5)
+    logging.info(f"Retrieving venue name for venue_id {venue_id}")
     venue_name = db.get_venue_name_by_id(venue_id)
     if not venue_name:
         raise HTTPException(status_code=500, detail="Failed to retrieve venue name for team, we have our best people on it.") 
@@ -65,7 +69,7 @@ async def venue_name(venue_id: str) -> str:
 
 @app.get("/simulations/{team_name}")
 async def simulations(team_name: str) -> list[Simulation]:
-    logging.log(msg=f"Retrieving simulations for team {team_name}", level=5)
+    logger.info(f"Retrieving simulations for team {team_name}")
     simulations = db.get_simulations_for_team(team_name=team_name)
     if not simulations:
         raise HTTPException(status_code=500, detail="Failed to retrieve simulations for team, we have our best people on it.") 
@@ -78,5 +82,6 @@ async def root():
     return {"message": "Hello Pluto World"}
 
 if __name__ == "__main__":
+    logger.info('Initialising application')
     initialise(db)
     uvicorn.run('pluto.__main__:app', host="0.0.0.0", port=8000, reload=True)
