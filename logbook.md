@@ -3,13 +3,13 @@
 # Monolith
 
 # Requirements
-- [ ] database that stores the csv data inside it and re-initialises on every startup
+- [x] database that stores the csv data inside it and re-initialises on every startup of docker container
 - [ ] docker compose up should be only command necessary for testing
-- [ ] application should run on port 3000
-- [ ] Allows the user to choose any game and displays relevant information
-    - [ ] Shows the simulation results as side-by-side histogram, looking something like this
-    - [ ] Displays the win percentage of the home team. The win percentage is the percentage of simulation runs in which this team beats the other selected team
-    - [ ] Is containerised 
+- [x] application should run on port 3000
+- [x] Allows the user to choose any game and displays relevant information
+    - [x] Shows the simulation results as side-by-side histogram, looking something like this
+    - [x] Displays the win percentage of the home team. The win percentage is the percentage of simulation runs in which this team beats the other selected team
+    - [x] Is containerised 
 
 # Solution
     ## Database

@@ -28,14 +28,14 @@ export const Modal = ({ onClose, children }: ModalProps) => {
     return (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
             <div className="w-[80rem] h-4/5 dark:bg-neutral-900 bg-white rounded-3xl shadow-xl">
-                <div className="flex flex-col gap-y-8">
+                <div className="flex flex-col gap-y-2">
                     <div className="flex justify-end p-4 items-center">
                         <button onClick={() => onClose(false)} className="p-2 rounded-3xl">
                             <X />
                         </button>
                     </div>
                     {/* Form body */}
-                    <div className="p-4 flex flex-col gap-y-4">
+                    <div className="px-4 flex flex-col gap-y-4">
                         {children}
                     </div>
                 </div>

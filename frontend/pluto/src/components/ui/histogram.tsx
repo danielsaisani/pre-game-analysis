@@ -103,22 +103,29 @@ export const Histogram = ({ width, height, data }: HistogramProps) => {
     );
 
     return (
-        <div>
-            <svg width={width} height={height}>
-                <g
-                    width={boundsWidth}
-                    height={boundsHeight}
-                    transform={`translate(${[MARGIN.left, MARGIN.top].join(",")})`}
-                >
-                    {allRects}
-                </g>
-                <g
-                    width={boundsWidth}
-                    height={boundsHeight}
-                    ref={axesRef}
-                    transform={`translate(${[MARGIN.left, MARGIN.top].join(",")})`}
-                />
-            </svg>
+        <div className="w-max">
+            <div className="flex items-center justify-center">
+                <span className="rotate-270 w-min">Percentage of matches</span>
+                <svg width={width} height={height}>
+                    <g
+                        width={boundsWidth}
+                        height={boundsHeight}
+                        transform={`translate(${[MARGIN.left, MARGIN.top].join(",")})`}
+                    >
+                        {allRects}
+                    </g>
+                    <g
+                        width={boundsWidth}
+                        height={boundsHeight}
+                        ref={axesRef}
+                        transform={`translate(${[MARGIN.left, MARGIN.top].join(",")})`}
+                    />
+                </svg>
+            </div>
+            <div className="flex items-center justify-center pb-10">
+                <span>Simulation Results</span>
+            </div>
+            {/* Legend */}
             <div className="flex justify-center mt-2.5">
                 {allGroupNames.map((name) => (
                     <div key={name} className="flex items-center mx-2.5">

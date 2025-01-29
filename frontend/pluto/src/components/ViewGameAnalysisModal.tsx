@@ -81,7 +81,7 @@ export function ViewPreGameAnalysisModal({ onClose, homeTeam, awayTeam }: ViewPr
             <div className="flex flex-col px-50 gap-24">
                 {loading && (!homeTeamData && !awayTeamData) && <div className="flex justify-center items-center"><Skeleton className="w-[40rem] h-[30rem]" /></div>}
                 {homeTeamData && awayTeamData && <div className="w-[20rem]">
-                    <Histogram width={700} height={400} data={combinedData} />
+                    <Histogram width={800} height={500} data={combinedData} />
                 </div>}
                 {loading && <div className="flex justify-center items-center"><Skeleton className="w-[10rem] h-[5rem]" /></div>}
                 {!loading && homeTeam && winningRate && <span className="text-lg">
