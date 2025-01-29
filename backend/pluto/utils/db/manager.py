@@ -8,7 +8,6 @@ class DatabaseManager:
         self.cur = self.con.cursor()
     
     def create_new_empty_table_with_headers(self, table_name, headers):
-        
         try:
             # Create table dynamically based on headers
             headers_string = ", ".join(headers)
@@ -17,6 +16,7 @@ class DatabaseManager:
             return True
         except Exception as e:
             return False
+
     def insert_data_into_database(self, table_name, headers, data):
         try:
             placeholders = ", ".join(["?"] * len(headers))  # Generate placeholders for values
@@ -31,11 +31,18 @@ class DatabaseManager:
             games = self.cur.execute("SELECT * FROM games")
             return games
         except Exception as e:
-            return false
+            return False
     
     def get_venue_name_by_id(self, venue_id):
         try:
             venue_name = self.cur.execute(f"SELECT venue_name FROM venues WHERE venue_id={venue_id}")
             return venue_name
         except Exception as e:
-            return false
+            return False
+    
+    def get_simulations_for_team(self, team_name):
+        try:
+            simulations = self.cur.execute(f"SELECT team, simulation_run, results FROM simulations WHERE team='{team_name}'")
+            return simulations
+        except Exception as e:
+            return False

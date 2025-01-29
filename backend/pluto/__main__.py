@@ -1,14 +1,19 @@
 import uvicorn
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import HTTPException
+
 import sqlite3
 import csv
+
 from pluto.utils.utils import get_data_from_csv, get_table_headers_from_csv
 from pluto.utils.db.manager import DatabaseManager
+from pluto.models.generic import Game, Simulation
+
 from dotenv import load_dotenv
 import os
-from pydantic import BaseModel
-import datetime
+import logging
 
 load_dotenv()
 
@@ -28,13 +33,6 @@ SEED_FILE_DIRECTORY = './resources/'
 
 db = DatabaseManager(DATABASE_NAME)
 
-class Game(BaseModel):
-    home_team: str
-    away_team: str
-    date: datetime.datetime
-    venue_id: str
-    
-
 
 def initialise(db):
     """Seed the database and perform any other initialization necessary."""
@@ -49,24 +47,35 @@ def initialise(db):
 
 @app.get("/games")
 async def games() -> list[Game]:
+    logging.log(msg=f"Retrieving all games.", level=5)
     games = db.get_all_games()
+    if not games:
+        raise HTTPException(status_code=500, detail="Failed to retrieve all games, we have our best people on it.") 
     game_objects = [Game(home_team=game[0], away_team=game[1], date=game[2], venue_id=game[3]) for game in games]
     return game_objects
 
 @app.get("/venueName/{venue_id}")
 async def venue_name(venue_id: str) -> str:
+    logging.log(msg=f"Retrieving venue name for venue_id {venue_id}", level=5)
     venue_name = db.get_venue_name_by_id(venue_id)
-    print(venue_name)
+    if not venue_name:
+        raise HTTPException(status_code=500, detail="Failed to retrieve venue name for team, we have our best people on it.") 
     return venue_name
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+@app.get("/simulations/{team_name}")
+async def simulations(team_name: str) -> list[Simulation]:
+    logging.log(msg=f"Retrieving simulations for team {team_name}", level=5)
+    simulations = db.get_simulations_for_team(team_name=team_name)
+    if not simulations:
+        raise HTTPException(status_code=500, detail="Failed to retrieve simulations for team, we have our best people on it.") 
+    simulation_objects = [Simulation(team_name=simulation[0], simulation_run=int(simulation[1]), results=int(simulation[2])) for simulation in simulations]
+    return simulation_objects
+    
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello Pluto World"}
 
 if __name__ == "__main__":
     initialise(db)
