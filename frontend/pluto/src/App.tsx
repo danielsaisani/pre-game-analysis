@@ -5,6 +5,7 @@ import './App.css'
 import { Card } from './components/ui/card';
 import { MessageSquareWarning } from 'lucide-react';
 import { Skeleton } from './components/ui/skeleton';
+import { ViewPreGameAnalysisModal } from './components/ViewGameAnalysisModal';
 
 const GamesDataResponseSchema = z.array(z.object({
   home_team: z.string(),
@@ -15,9 +16,7 @@ const GamesDataResponseSchema = z.array(z.object({
 
 type GamesData = z.infer<typeof GamesDataResponseSchema>
 
-const VenueNameResponseSchema = z.string()
 
-type VenueNameResponse = z.infer<typeof VenueNameResponseSchema>
 
 const useGamesData = () => {
   const [data, setData] = useState<GamesData | null>(null);
@@ -47,50 +46,28 @@ const useGamesData = () => {
   return { data, loading, error, refetch: fetchData };
 };
 
-const useVenueName = (venueId: string) => {
-  const [venue_loading, setLoading] = useState(false);
-  const [venue_error, setError] = useState<any>(null);
-  const [venueName, setVenueName] = useState<VenueNameResponse | null>(null);
-
-  const fetchData = async (venueId: string) => {
-    setLoading(true);
-    try {
-      const venue_response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/venueName/${venueId}`);
-      const venue_result = await venue_response.json();
-      const venueParsedData = VenueNameResponseSchema.parse(venue_result)
-      setVenueName(venueParsedData);
-
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData(venueId);
-  }, []);
-
-  return { venueName, venue_loading, venue_error, refetch: fetchData };
-
-}
-
 function App() {
 
   const { data, loading, error } = useGamesData()
   const [showGameAnalysisModal, setShowGameAnalysisModal] = useState(false)
-  const [selectedGame, setSelectedGame] = useState(null)
+  const [homeTeam, setHomeTeam] = useState<string | null>(null)
+  const [awayTeam, setAwayTeam] = useState<string | null>(null)
 
   console.log(data)
 
   return (
     <div className='flex flex-col bg-red font-bold h-screen items-cent'>
-      <h1>
-        Pluto Pre-Game Analysis
-      </h1>
-      <h2>
-        Bet smarter
-      </h2>
+      <div className='flex flex-col items-center gap-2'>
+        <h1>
+          Pluto Pre-Game Analysis
+        </h1>
+        <h2>
+          Bet Smarter with Pluto: Your Pre-Game Analysis Platform for Predicting Sports Winners
+        </h2>
+      </div>
+
+      {/* This is quite a hacky solution, will need to eventually find a way to enforce the home and away team being defined on the invocation of this modal */}
+      {showGameAnalysisModal && homeTeam && awayTeam && <ViewPreGameAnalysisModal onClose={() => { setShowGameAnalysisModal(false) }} homeTeam={homeTeam} awayTeam={awayTeam} />}
 
       {/* Grid for games to look at and analyse */}
       <div className='flex flex-wrap justify-center gap-4 py-20'>
@@ -129,7 +106,11 @@ function App() {
         {!loading && (
           <div className='flex flex-wrap justify-center gap-4'>
             {data?.map((game) => (
-              <Card className='w-[10rem] h-[10rem] p-4 bg-gray-400 hover:scale-105 duration-300 cursor-pointer' onClick={() => { }}>
+              <Card className='w-[10rem] h-[10rem] p-4 bg-gray-400 hover:scale-105 duration-300 cursor-pointer' onClick={() => {
+                setShowGameAnalysisModal(true)
+                setHomeTeam(game.home_team)
+                setAwayTeam(game.away_team)
+              }}>
                 {game.home_team} vs {game.away_team}
               </Card>
             ))}

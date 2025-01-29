@@ -30,7 +30,7 @@ export const Modal = ({ onClose, children }: ModalProps) => {
             <div className="w-[80rem] h-4/5 dark:bg-neutral-900 bg-white rounded-3xl shadow-xl">
                 <div className="flex flex-col gap-y-8">
                     <div className="flex justify-end p-4 items-center">
-                        <button onClick={() => onClose(false)} className="hover:bg-white p-2 rounded-3xl hover:text-black">
+                        <button onClick={() => onClose(false)} className="p-2 rounded-3xl">
                             <X />
                         </button>
                     </div>
