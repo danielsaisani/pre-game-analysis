@@ -28,13 +28,14 @@ export const Histogram = ({ width, height, data }: HistogramProps) => {
     // Calculate total runs across all groups
     const totalRuns = data[0].values.length
 
-    console.log(totalRuns)
-
     const xScale = useMemo(() => {
         const maxPerGroup = data.map((group) => Math.max(...group.values));
+        const minPerGroup = data.map((group) => Math.min(...group.values))
         const max = Math.max(...maxPerGroup);
-        return d3.scaleLinear().domain([0, max]).range([10, boundsWidth]).nice();
+        const min = Math.min(...minPerGroup)
+        return d3.scaleLinear().domain([min, max]).range([10, boundsWidth]).nice();
     }, [data, width]);
+
 
     const bucketGenerator = useMemo(() => {
         return d3
@@ -47,7 +48,6 @@ export const Histogram = ({ width, height, data }: HistogramProps) => {
     const groupBuckets = useMemo(() => {
         return data.map((group) => {
             const buckets = bucketGenerator(group.values);
-            // Calculate percentage for each bucket based on total runs
             return {
                 name: group.name,
                 buckets: buckets.map(bucket => ({
@@ -58,16 +58,15 @@ export const Histogram = ({ width, height, data }: HistogramProps) => {
         });
     }, [data, totalRuns]);
 
+    const maxY = useMemo(() => {
+        const maxPerBucket = groupBuckets.flatMap(group => group.buckets.map(bucket => bucket.length));
+        return Math.max(...maxPerBucket);
+    }, [groupBuckets]);
+
     const yScale = useMemo(() => {
-        const max = Math.max(
-            ...groupBuckets.map((group) =>
-                Math.max(...group.buckets.map((bucket) => bucket.length))
-            )
-        );
-        return d3.scaleLinear().range([boundsHeight, 0]).domain([0, max]).nice();
+        return d3.scaleLinear().range([boundsHeight, 0]).domain([0, maxY]).nice(); // Set domain to 0-100 for percentage
     }, [data, height]);
 
-    // Render the X axis using d3.js, not react
     useEffect(() => {
         const svgElement = d3.select(axesRef.current);
         svgElement.selectAll("*").remove();
@@ -78,12 +77,11 @@ export const Histogram = ({ width, height, data }: HistogramProps) => {
             .attr("transform", "translate(0," + boundsHeight + ")")
             .call(xAxisGenerator);
 
-        const yAxisGenerator = d3.axisLeft(yScale);
+        const yAxisGenerator = d3.axisLeft(yScale).tickFormat(d => `${d}%`); // Format y-axis labels as percentages
         svgElement.append("g").call(yAxisGenerator);
     }, [xScale, yScale, boundsHeight]);
 
-    const barWidth = (boundsWidth / (data.length * BUCKET_NUMBER)) - BUCKET_PADDING;
-
+    const barWidth = (boundsWidth / (data.length * BUCKET_NUMBER)) - BUCKET_PADDING; // Calculate width for each bar
     const allRects = groupBuckets.map((group, i) =>
         group.buckets.map((bucket, j) => {
             const { x0, x1 } = bucket;
@@ -95,7 +93,7 @@ export const Histogram = ({ width, height, data }: HistogramProps) => {
                     key={`${i}_${j}`}
                     fill={colorScale(group.name)}
                     opacity={0.7}
-                    x={xScale(x0) + (i * (barWidth + BUCKET_PADDING))}
+                    x={xScale(x0) + (i * (barWidth + BUCKET_PADDING))} // Adjust x position based on group index
                     width={barWidth}
                     y={yScale(bucket.length)}
                     height={boundsHeight - yScale(bucket.length)}

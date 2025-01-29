@@ -53,8 +53,6 @@ function App() {
   const [homeTeam, setHomeTeam] = useState<string | null>(null)
   const [awayTeam, setAwayTeam] = useState<string | null>(null)
 
-  console.log(data)
-
   return (
     <div className='flex flex-col bg-red font-bold h-screen items-cent'>
       <div className='flex flex-col items-center gap-2'>

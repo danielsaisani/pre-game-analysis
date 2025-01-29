@@ -84,7 +84,7 @@ export function ViewPreGameAnalysisModal({ onClose, homeTeam, awayTeam }: ViewPr
                     <Histogram width={700} height={400} data={combinedData} />
                 </div>}
                 {loading && <div className="flex justify-center items-center"><Skeleton className="w-[10rem] h-[5rem]" /></div>}
-                {!loading && homeTeam && winningRate && <span>
+                {!loading && homeTeam && winningRate && <span className="text-lg">
                     Winning rate for home team, {homeTeam} is {winningRate.toFixed(2)} %
                 </span>}
             </div>
